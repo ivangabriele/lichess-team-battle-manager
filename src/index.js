@@ -2,6 +2,7 @@ const axios = require("axios");
 const clipboardy = require("clipboardy");
 const dotenv = require("dotenv");
 const moment = require("moment");
+const ora = require("ora");
 const R = require("ramda");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
@@ -26,6 +27,21 @@ const axiosInstance = axios.create({
 
 const now = () => moment().toISOString();
 const waitFor = (inMs) => new Promise((resolve) => setTimeout(resolve, inMs));
+
+async function spinFor(inMin) {
+  const spinner = ora().start();
+  const end = moment().add(inMin, "minutes");
+  diff = Infinity;
+
+  while (diff > 0) {
+    diff = end.diff(moment());
+    spinner.text = `Next API call in ${moment.utc(diff).format("mm:ss")}`;
+
+    await waitFor(1000);
+  }
+
+  spinner.stop();
+}
 
 function normalizeGoogleSheetData(feedEntry) {
   const cells = R.values(feedEntry);
@@ -145,7 +161,7 @@ async function invite(options) {
         `First time invitation sent to @${leaderId} for the team: ${name}.`
       );
 
-      await waitFor(1200000);
+      await spinFor(5);
     }
   } catch (err) {
     console.log(now(), `[invite()] ${err}`);
