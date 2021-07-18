@@ -6,6 +6,8 @@ const R = require("ramda");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 
+const MESSAGES = require("./messages.json");
+
 dotenv.config();
 
 // https://www.freecodecamp.org/news/cjn-google-sheets-as-json-endpoint/
@@ -16,7 +18,7 @@ const GOOGLE_SHEET_URL = [
 ].join("");
 
 const axiosInstance = axios.create({
-  baseURL: "https://lichess.org/api",
+  baseURL: "https://lichess.org",
   headers: {
     Authorization: `Bearer ${process.env.LICHESS_API_ACCESS_TOKEN}`,
   },
@@ -40,6 +42,12 @@ function normalizeGoogleSheetData(feedEntry) {
     R.filter(({ gs$cell: { row } }) => Number(row) !== 1),
     // Extract each cell value
     R.map(({ content: { $t } }) => $t),
+    // Convert string booleans to real ones
+    R.map((value) =>
+      value === "TRUE" ? true : value === "FALSE" ? false : value
+    ),
+    // Convert dashed values to `null`
+    R.map((value) => (value === "-" ? null : value)),
     // Split into rows
     R.splitEvery(dataProps.length),
     // Transform rows into objects
@@ -59,10 +67,18 @@ async function getTeamsSheetData() {
   }
 }
 
+function fillMessage(messageId, leaderName, teamName, tournamentId) {
+  return R.pipe(
+    R.replace(/{LEADER_NAME}/, String(leaderName)),
+    R.replace(/{TEAM_NAME}/, String(teamName)),
+    R.replace(/{TOURNAMENT_ID}/, String(tournamentId))
+  )(MESSAGES[messageId]);
+}
+
 async function list(options) {
   try {
     const { data: tournamentData } = await axiosInstance.get(
-      `/tournament/${options.tournamentId}`
+      `/api/tournament/${options.tournamentId}`
     );
 
     const teamPairs = R.pipe(
@@ -101,14 +117,49 @@ async function list(options) {
   }
 }
 
+async function invite(options) {
+  try {
+    const teamsSheetData = await getTeamsSheetData();
+
+    const newTeams = R.filter(
+      ({ isContacted }) => !isContacted,
+      teamsSheetData
+    );
+
+    let index = newTeams.length;
+    while (--index >= 0) {
+      const { leaderId, leaderName, name } = newTeams[index];
+      if (leaderName === null) {
+        continue;
+      }
+
+      const message = fillMessage(
+        "firstTime",
+        leaderName,
+        name,
+        options.tournamentId
+      );
+
+      await axiosInstance.post(`/inbox/${leaderId}`, { text: message });
+      console.log(
+        `First time invitation sent to @${leaderId} for the team: ${name}.`
+      );
+
+      await waitFor(1200000);
+    }
+  } catch (err) {
+    console.log(now(), `[invite()] ${err}`);
+  }
+}
+
 yargs(hideBin(process.argv))
+  .demandCommand()
   .command(
     "list [tournamentId]",
-    "List existing tournament teams",
+    "List existing tournament teams.",
     (yargs) => yargs.positional("tournamentId", {}),
     list
   )
-  .demandCommand()
   .option("tournamentId", {
     type: "string",
     description: "Tournament ID.",
@@ -118,4 +169,15 @@ yargs(hideBin(process.argv))
     type: "boolean",
     description: "List only new teams.",
     default: false,
+  })
+  .command(
+    "invite [tournamentId]",
+    "Send invitations to team leaders for the next tournament.",
+    (yargs) => yargs.positional("tournamentId", {}),
+    invite
+  )
+  .option("tournamentId", {
+    type: "string",
+    description: "Tournament ID.",
+    demandOption: true,
   }).argv;
