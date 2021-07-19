@@ -161,7 +161,9 @@ async function invite(options) {
         `First time invitation sent to @${leaderId} for the team: ${name}.`
       );
 
-      await spinFor(5);
+      if (index > 0) {
+        await spinFor(5);
+      }
     }
   } catch (err) {
     console.log(now(), `[invite()] ${err}`);
