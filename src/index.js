@@ -162,7 +162,7 @@ async function invite(options) {
       );
 
       if (index > 0) {
-        await spinFor(5);
+        await spinFor(10);
       }
     }
   } catch (err) {
