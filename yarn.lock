@@ -324,6 +324,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lichess-team-battle-manager@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "lichess-team-battle-manager@workspace:."
+  dependencies:
+    axios: 0.21.1
+    cli-table3: 0.6.0
+    clipboardy: 2.3.0
+    dotenv: 10.0.0
+    moment: 2.29.1
+    ora: 5.4.1
+    ramda: 0.27.1
+    yargs: 17.0.1
+  languageName: unknown
+  linkType: soft
+
 "log-symbols@npm:^4.1.0":
   version: 4.1.0
   resolution: "log-symbols@npm:4.1.0"
@@ -575,21 +590,6 @@ __metadata:
   checksum: 298d95f9c185c4da22c1bfb1fdfa37c2ba56df8a6b98706ab361bf31a7d3a4845afaecfc48d4de7a259048842b5f2977f51b56f5c06c1f6a83dcf5a9e3de634a
   languageName: node
   linkType: hard
-
-"world-classicals-mailer@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "world-classicals-mailer@workspace:."
-  dependencies:
-    axios: 0.21.1
-    cli-table3: 0.6.0
-    clipboardy: 2.3.0
-    dotenv: 10.0.0
-    moment: 2.29.1
-    ora: 5.4.1
-    ramda: 0.27.1
-    yargs: 17.0.1
-  languageName: unknown
-  linkType: soft
 
 "wrap-ansi@npm:^7.0.0":
   version: 7.0.0

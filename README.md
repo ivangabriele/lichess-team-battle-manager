@@ -1,4 +1,5 @@
-# World Classicals Mailer
+# Lichess Team Battle Manager
 
-A simple mailer utilizing Lichess API to manage the team battles communication for
-[World Classicals Team](https://lichess.org/team/world-classicals).
+A simple tool utilizing Lichess API to manage regular
+Lichess Team Battles. As of now, tt's highly customized for
+[World Classicals](https://lichess.org/team/world-classicals) Team Battles.

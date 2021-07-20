@@ -1,5 +1,5 @@
 {
-  "name": "world-classicals-mailer",
+  "name": "lichess-team-battle-manager",
   "scripts": {
     "start": "node src/index.js"
   },
