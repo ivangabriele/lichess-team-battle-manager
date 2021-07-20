@@ -5,13 +5,21 @@ const Table = require("cli-table3");
 const normalizeLichessTournamentsList = require("../helpers/normalizeLichessTournamentsList");
 const now = require("../helpers/now");
 const requester = require("../libs/requester");
+const teamsSheet = require("../libs/teamsSheet");
 
 async function check({ tournamentId }) {
   try {
+    console.log();
     const spinner = ora().start();
     const table = new Table({
       head: ["Id", "Name", "Registered"],
     });
+
+    const teamsSheetList = await teamsSheet.get();
+    const sheetRegisteredTeamIds = R.pipe(
+      R.filter(({ hasAccepted }) => hasAccepted),
+      R.map(({ id }) => id)
+    )(teamsSheetList);
 
     const { data: tournamentData } = await requester.get(
       `/api/tournament/${tournamentId}`
@@ -38,12 +46,17 @@ async function check({ tournamentId }) {
       );
 
       counter += Number(hasJoined);
-      table.push([...teamPair, hasJoined ? `YES` : `NO`]);
+      let registeredText = hasJoined ? `YES` : `NO`;
+      if (hasJoined && !sheetRegisteredTeamIds.includes(teamPair[0])) {
+        registeredText = `${registeredText} ⚠️ `;
+      }
+      table.push([...teamPair, registeredText]);
     }
 
     spinner.stop();
     console.log(table.toString());
     console.log(`${counter}/${teamPairs.length} teams are registered.`);
+    console.log();
   } catch (err) {
     console.log(now(), `[commands/check()] ${err}`);
   }
