@@ -15,8 +15,15 @@ async function invite(options) {
       teamsSheetList
     );
 
-    let index = newTeams.length;
-    while (--index >= 0) {
+    if (newTeams.length === 0) {
+      console.log(`There is no team to invite.`);
+
+      return;
+    }
+
+    const indexMax = newTeams.length;
+    let index = -1;
+    while (++index < indexMax) {
       const { leaderId, leaderName, name } = newTeams[index];
       if (leaderName === null) {
         continue;
