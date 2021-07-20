@@ -102,32 +102,58 @@ async function list(options) {
       R.sortBy(R.prop(0))
     )(tournamentData.teamBattle.teams);
 
-    if (!options.new) {
-      console.log(teamPairs);
+    if (options.excluded) {
+      const teamsSheetData = await getTeamsSheetData();
+      const tournamentTeamIds = R.map(([teamId]) => teamId, teamPairs);
+      const excludedTeamsLists = R.pipe(
+        R.filter(({ isExcluded }) => isExcluded),
+        R.map(({ id, name, note }) => {
+          const log = `${id} "${name}" (Note: ${note})`;
+
+          if (tournamentTeamIds.includes(id)) {
+            return `⚠️  ${log}`;
+          }
+
+          return log;
+        }),
+        R.join(`\n`)
+      )(teamsSheetData);
+
+      console.log(excludedTeamsLists);
 
       return;
     }
 
-    const teamsSheetData = await getTeamsSheetData();
-    const teamSheetTeamIds = R.map(R.prop("id"), teamsSheetData);
+    if (options.new) {
+      const teamsSheetData = await getTeamsSheetData();
+      const teamSheetTeamIds = R.map(R.prop("id"), teamsSheetData);
+      const newTeamsTsv = R.pipe(
+        R.filter(([teamId]) => !R.includes(teamId, teamSheetTeamIds)),
+        R.map(
+          ([teamId, teamName]) =>
+            `${teamId}\t${teamName}\t${teamName}\t-\t-\tFALSE\tFALSE\tFALSE\tFALSE\tFALSE\t-`
+        ),
+        R.join(`\n`)
+      )(teamPairs);
 
-    const newTeamsTsv = R.pipe(
-      R.filter(([teamId]) => !R.includes(teamId, teamSheetTeamIds)),
-      R.map(
-        ([teamId, teamName]) =>
-          `${teamId}\t${teamName}\t${teamName}\t-\t-\tFALSE\tFALSE\tFALSE\tFALSE\tFALSE\t-`
-      ),
+      if (newTeamsTsv.length === 0) {
+        console.log(`There is no new team.`);
+
+        return;
+      }
+
+      clipboardy.writeSync(newTeamsTsv);
+      console.log(`${newTeamsTsv.split(/\n/).length} new teams TSV copied.`);
+
+      return;
+    }
+
+    const list = R.pipe(
+      R.map(([teamId, teamName]) => `${teamId} "${teamName}"`),
       R.join(`\n`)
     )(teamPairs);
 
-    if (newTeamsTsv.length === 0) {
-      console.log(`There is no new team.`);
-
-      return;
-    }
-
-    clipboardy.writeSync(newTeamsTsv);
-    console.log(`${newTeamsTsv.split(/\n/).length} new teams TSV copied.`);
+    console.log(list);
   } catch (err) {
     console.log(now(), `[list()] ${err}`);
   }
@@ -167,6 +193,7 @@ async function invite(options) {
     }
   } catch (err) {
     console.log(now(), `[invite()] ${err}`);
+    console.log(now(), `[invite()] ${err?.response?.data?.error}`);
   }
 }
 
@@ -183,7 +210,14 @@ yargs(hideBin(process.argv))
     description: "Tournament ID.",
     demandOption: true,
   })
+  .option("excluded", {
+    alias: "x",
+    type: "boolean",
+    description: "List only excluded teams.",
+    default: false,
+  })
   .option("new", {
+    alias: "n",
     type: "boolean",
     description: "List only new teams.",
     default: false,
