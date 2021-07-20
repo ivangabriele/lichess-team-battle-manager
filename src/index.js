@@ -188,7 +188,9 @@ async function invite(options) {
       );
 
       if (index > 0) {
-        await spinFor(10);
+        // Limited by the API Rate Limit (3/h?)
+        // https://github.com/ornicar/lila/blob/master/modules/security/src/main/EmailConfirm.scala#L133
+        await spinFor(20);
       }
     }
   } catch (err) {
