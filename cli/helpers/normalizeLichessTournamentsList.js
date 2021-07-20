@@ -1,6 +1,14 @@
 const now = require("./now");
 
 function normalizeLichessTournamentsList(tournamentsData) {
+  if (typeof tournamentsData === "object") {
+    return [tournamentsData];
+  }
+
+  if (tournamentsData.length === 0) {
+    return [];
+  }
+
   try {
     return tournamentsData.split(/\n/).reduce((currentArenas, arenaJson) => {
       try {
@@ -11,8 +19,6 @@ function normalizeLichessTournamentsList(tournamentsData) {
     }, []);
   } catch (err) {
     console.log(now(), `[helpers/normalizeLichessTournamentsList()] ${err}`);
-
-    return [];
   }
 }
 
