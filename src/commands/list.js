@@ -1,5 +1,6 @@
 const clipboardy = require("clipboardy");
 const R = require("ramda");
+const Table = require("cli-table3");
 
 const now = require("../helpers/now");
 const requester = require("../libs/requester");
@@ -17,23 +18,24 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
     )(tournamentData.teamBattle.teams);
 
     if (isExcluded) {
+      const table = new Table({
+        head: ["Id", "Name", "Note"],
+      });
+
       const teamsSheetList = await teamsSheet.get();
       const tournamentTeamIds = R.map(([teamId]) => teamId, teamPairs);
-      const excludedTeamsLists = R.pipe(
+      R.pipe(
         R.filter(({ isExcluded }) => isExcluded),
-        R.map(({ id, name, note }) => {
-          const log = `${id} "${name}" (Note: ${note})`;
-
+        R.forEach(({ id, name, note }) => {
           if (tournamentTeamIds.includes(id)) {
-            return `⚠️  ${log}`;
+            table.push([`⚠️ §{id}`, name, note]);
           }
 
-          return log;
-        }),
-        R.join(`\n`)
+          table.push([id, name, note]);
+        })
       )(teamsSheetList);
 
-      console.log(excludedTeamsLists);
+      console.log(table.toString());
 
       return;
     }
@@ -61,12 +63,13 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
       return;
     }
 
-    const list = R.pipe(
-      R.map(([teamId, teamName]) => `${teamId} "${teamName}"`),
-      R.join(`\n`)
-    )(teamPairs);
+    const table = new Table({
+      head: ["Id", "Name"],
+    });
 
-    console.log(list);
+    teamPairs.forEach((teamPair) => table.push(teamPair));
+
+    console.log(table.toString());
   } catch (err) {
     console.log(now(), `[commands/list()] ${err}`);
   }
