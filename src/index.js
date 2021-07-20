@@ -4,11 +4,23 @@ const { hideBin } = require("yargs/helpers");
 
 dotenv.config();
 
+const check = require("./commands/check");
 const invite = require("./commands/invite");
 const list = require("./commands/list");
 
 yargs(hideBin(process.argv))
   .demandCommand()
+  .command(
+    "check [tournamentId]",
+    "Check existing tournament teams.",
+    (yargs) => yargs.positional("tournamentId", {}),
+    check
+  )
+  .option("tournamentId", {
+    type: "string",
+    description: "Tournament ID.",
+    demandOption: true,
+  })
   .command(
     "list [tournamentId]",
     "List existing tournament teams.",
