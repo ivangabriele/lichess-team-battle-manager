@@ -10,15 +10,15 @@ Lichess Team Battles. As of now, tt's highly customized for
 ltbm <command>
 
 Commands:
-  ltbm check [tournamentId]   Check existing tournament teams.
-  ltbm list [tournamentId]    List existing tournament teams.
-  ltbm invite [tournamentId]  Send invitations to team leaders for the next
+  ltbm check [tournamentId]   Check registered teams for the provided tournament
+                              ID.
+  ltbm list [tournamentId]    List teams.
+  ltbm invite [tournamentId]  Send invitations to team leaders for the provided
                               tournament.
+  ltbm suggest                Suggest potential team leaders to contact for new
+                              teams (Teams Sheet).
 
 Options:
-      --help          Show help                                        [boolean]
-      --version       Show version number                              [boolean]
-      --tournamentId  Tournament ID.                         [string] [required]
-  -x, --excluded      List only excluded teams.       [boolean] [default: false]
-  -n, --new           List only new teams.            [boolean] [default: false]
+  --help     Show help                                                 [boolean]
+  --version  Show version number                                       [boolean]
 ```
