@@ -52,7 +52,7 @@ async function invite({ byHand, tournamentId }) {
         `First time invitation sent to @${leaderId} for the team: ${name}.`
       );
 
-      if (index > 0) {
+      if (index < indexMax - 1) {
         // Limited by the API Rate Limit:
         // It should be 25 * 20 = 500/d but is it rather 3/h?
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L44
