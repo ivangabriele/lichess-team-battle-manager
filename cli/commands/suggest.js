@@ -36,6 +36,12 @@ async function suggest({ tournamentId }) {
       teamsSheetList
     );
 
+    if (teamsSheetLeaderlessTeamIds.length === 0) {
+      console.log(`There is no leaderless team.`);
+
+      return;
+    }
+
     const teamId = teamsSheetLeaderlessTeamIds[0].id;
     const teamName = teamsSheetLeaderlessTeamIds[0].name;
     console.log(`Team: ${teamName}`);
