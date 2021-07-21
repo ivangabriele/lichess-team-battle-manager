@@ -9,51 +9,56 @@ dotenv.config();
 const check = require("./commands/check");
 const invite = require("./commands/invite");
 const list = require("./commands/list");
+const suggest = require("./commands/suggest");
 
 yargs(hideBin(process.argv))
   .demandCommand()
   .command(
     "check [tournamentId]",
-    "Check existing tournament teams.",
+    "Check registered teams for the provided tournament ID.",
     (yargs) => yargs.positional("tournamentId", {}),
     check
   )
   .option("tournamentId", {
     type: "string",
     description: "Tournament ID.",
-    demandOption: true,
   })
   .command(
     "list [tournamentId]",
-    "List existing tournament teams.",
+    "List teams.",
     (yargs) => yargs.positional("tournamentId", {}),
     list
   )
   .option("tournamentId", {
     type: "string",
     description: "Tournament ID.",
-    demandOption: true,
   })
   .option("excluded", {
     alias: "x",
     type: "boolean",
-    description: "List only excluded teams.",
+    description: "List excluded teams (from the Teams Sheet).",
     default: false,
   })
   .option("new", {
     alias: "n",
     type: "boolean",
-    description: "List only new teams.",
+    description:
+      `Copy new teams added to the provided tournament in TSV format ` +
+      `in order to paste them in the Teams Sheet.`,
     default: false,
   })
   .command(
     "invite [tournamentId]",
-    "Send invitations to team leaders for the next tournament.",
+    "Send invitations to team leaders for the provided tournament.",
     (yargs) => yargs.positional("tournamentId", {}),
     invite
   )
   .option("tournamentId", {
     type: "string",
     description: "Tournament ID.",
-    demandOption: true,
-  }).argv;
+  })
+  .command(
+    "suggest",
+    "Suggest potential team leaders to contact for new teams (Teams Sheet).",
+    suggest
+  ).argv;
