@@ -9,7 +9,6 @@ const teamsSheet = require("../libs/teamsSheet");
 
 async function check({ tournamentId }) {
   try {
-    console.log();
     const spinner = ora().start();
     const table = new Table({
       head: ["Id", "Name", "Registered"],
@@ -56,7 +55,6 @@ async function check({ tournamentId }) {
     spinner.stop();
     console.log(table.toString());
     console.log(`${counter}/${teamPairs.length} teams are registered.`);
-    console.log();
   } catch (err) {
     console.log(now(), `[commands/check()] ${err}`);
   }
