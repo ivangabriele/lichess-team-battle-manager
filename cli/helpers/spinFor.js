@@ -1,3 +1,4 @@
+const moment = require("moment");
 const ora = require("ora");
 
 const waitFor = (inMs) => new Promise((resolve) => setTimeout(resolve, inMs));
