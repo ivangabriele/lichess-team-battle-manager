@@ -1,3 +1,4 @@
+const clipboardy = require("clipboardy");
 const R = require("ramda");
 
 const generateMessage = require("../helpers/generateMessage");
@@ -6,7 +7,7 @@ const spinFor = require("../helpers/spinFor");
 const requester = require("../libs/requester");
 const teamsSheet = require("../libs/teamsSheet");
 
-async function invite(options) {
+async function invite({ byHand, tournamentId }) {
   try {
     const teamsSheetList = await teamsSheet.get();
 
@@ -33,8 +34,18 @@ async function invite(options) {
         "firstTime",
         leaderName,
         name,
-        options.tournamentId
+        tournamentId
       );
+
+      if (byHand) {
+        console.log(`Team: ${name}`);
+        console.log(`Link: https://lichess.org/inbox/${leaderId}`);
+
+        clipboardy.writeSync(message);
+        console.log(`Invitation text copied.`);
+
+        return;
+      }
 
       await requester.post(`/inbox/${leaderId}`, { text: message });
       console.log(

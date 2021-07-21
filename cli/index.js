@@ -57,6 +57,12 @@ yargs(hideBin(process.argv))
     type: "string",
     description: "Tournament ID.",
   })
+  .option("by-hand", {
+    alias: "H",
+    type: "boolean",
+    description: "Generate inbox link and clipboard text.",
+    default: false,
+  })
   .command(
     "suggest",
     "Suggest potential team leaders to contact for new teams (Teams Sheet).",
