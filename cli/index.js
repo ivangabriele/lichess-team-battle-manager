@@ -18,7 +18,7 @@ yargs.command(
       type: "string",
       description: "Tournament ID.",
       demandOption: true,
-    }).argv,
+    }),
   check
 );
 
@@ -46,7 +46,7 @@ yargs.command(
           `Copy new teams added to the provided tournament in TSV format ` +
           `in order to paste them in the Teams Sheet.`,
         default: false,
-      }).argv,
+      }),
   list
 );
 
@@ -66,13 +66,14 @@ yargs.command(
         type: "boolean",
         description: "Generate inbox link and clipboard text.",
         default: false,
-      }).argv,
+      }),
   invite
 );
 
 yargs.command(
   "suggest",
   "Suggest potential team leaders to contact for new teams (Teams Sheet).",
+  () => void 0,
   suggest
 );
 
