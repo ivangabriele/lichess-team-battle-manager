@@ -29,7 +29,9 @@ class TeamsSheet {
   async get() {
     await this._load();
 
-    return this._rows.filter(({ isSpecial }) => !isSpecial);
+    return this._rows.filter(
+      ({ isExcluded, isSpecial }) => !isExcluded && !isSpecial
+    );
   }
 
   async getAll() {
