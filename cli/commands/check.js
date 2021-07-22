@@ -11,7 +11,7 @@ async function check({ tournamentId }) {
   try {
     const spinner = ora().start();
     const table = new Table({
-      head: ["Id", "Name", "Registered"],
+      head: [`Id`, `Name`, `Registered`, ``],
     });
 
     const teamsSheetList = await teamsSheet.getAll();
@@ -45,11 +45,14 @@ async function check({ tournamentId }) {
       );
 
       counter += Number(hasJoined);
-      let registeredText = hasJoined ? `YES` : `NO`;
-      if (hasJoined && !sheetRegisteredTeamIds.includes(teamPair[0])) {
-        registeredText = `${registeredText} ⚠️ `;
-      }
-      table.push([...teamPair, registeredText]);
+      table.push([
+        ...teamPair,
+        hasJoined ? `YES` : `NO`,
+        (hasJoined && !sheetRegisteredTeamIds.includes(teamPair[0])) ||
+        (!hasJoined && sheetRegisteredTeamIds.includes(teamPair[0]))
+          ? `❗`
+          : ``,
+      ]);
     }
 
     spinner.stop();
