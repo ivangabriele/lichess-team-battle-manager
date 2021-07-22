@@ -13,30 +13,42 @@ const GOOGLE_SHEET_URL = [
 
 class TeamsSheet {
   constructor() {
-    this.teams = [];
+    this._rows = [];
   }
 
-  async load() {
+  async _load() {
     try {
       const { data: teamsData } = await requester.get(GOOGLE_SHEET_URL);
 
-      this.teams = normalizeGoogleSheetData(teamsData.feed.entry);
+      this._rows = normalizeGoogleSheetData(teamsData.feed.entry);
     } catch (err) {
       console.log(now(), `[libs/teamsSheet#load()] ${err}`);
     }
   }
 
   async get() {
-    await this.load();
+    await this._load();
 
-    return this.teams;
+    return this._rows.filter(({ isSpecial }) => !isSpecial);
+  }
+
+  async getAll() {
+    await this._load();
+
+    return this._rows;
   }
 
   async getIds() {
     try {
-      await this.load();
+      return (await this.get()).map(({ id }) => id);
+    } catch (err) {
+      console.log(now(), `[libs/teamsSheet#getIds()] ${err}`);
+    }
+  }
 
-      return this.teams.map(({ id }) => id);
+  async getAllIds() {
+    try {
+      return (await this.getAll()).map(({ id }) => id);
     } catch (err) {
       console.log(now(), `[libs/teamsSheet#getIds()] ${err}`);
     }

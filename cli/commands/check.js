@@ -14,7 +14,7 @@ async function check({ tournamentId }) {
       head: ["Id", "Name", "Registered"],
     });
 
-    const teamsSheetList = await teamsSheet.get();
+    const teamsSheetList = await teamsSheet.getAll();
     const sheetRegisteredTeamIds = R.pipe(
       R.filter(({ hasAccepted }) => hasAccepted),
       R.map(({ id }) => id)

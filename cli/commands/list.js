@@ -41,12 +41,12 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
     }
 
     if (isNew) {
-      const teamSheetIds = await teamsSheet.getIds();
+      const teamSheetIds = await teamsSheet.getAllIds();
       const newTeamsTsv = R.pipe(
         R.filter(([teamId]) => !R.includes(teamId, teamSheetIds)),
         R.map(
           ([teamId, teamName]) =>
-            `${teamId}\t${teamName}\t${teamName}\t-\t-\tFALSE\tFALSE\tFALSE\tFALSE\tFALSE\t-`
+            `${teamId}\t${teamName}\t${teamName}\t-\t-\tFALSE\tFALSE\tFALSE\tFALSE\tFALSE\tFALSE\t-`
         ),
         R.join(`\n`)
       )(teamPairs);
