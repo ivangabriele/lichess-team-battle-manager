@@ -80,6 +80,10 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
         `/api/user/${leaderId}`
       );
 
+      if (lichessUser.closed === true) {
+        continue;
+      }
+
       table.push([
         lichessUser.id,
         lichessUser.profile?.firstName ? lichessUser.profile.firstName : `-`,
