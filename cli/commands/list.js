@@ -19,7 +19,7 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
 
     if (isExcluded) {
       const table = new Table({
-        head: ["Id", "Name", "Note"],
+        head: [`Id`, `Name`, `Note`, ``],
       });
 
       const teamsSheetList = await teamsSheet.get();
@@ -27,11 +27,12 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
       R.pipe(
         R.filter(({ isExcluded }) => isExcluded),
         R.forEach(({ id, name, note }) => {
-          if (tournamentTeamIds.includes(id)) {
-            table.push([`⚠️ §{id}`, name, note]);
-          }
-
-          table.push([id, name, note]);
+          table.push([
+            id,
+            name,
+            note,
+            tournamentTeamIds.includes(id) ? `❗` : ``,
+          ]);
         })
       )(teamsSheetList);
 
@@ -64,7 +65,7 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
     }
 
     const table = new Table({
-      head: ["Id", "Name"],
+      head: [`Id`, `Name`],
     });
 
     teamPairs.forEach((teamPair) => table.push(teamPair));
