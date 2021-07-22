@@ -19,7 +19,7 @@ class Blacklist {
   _load() {
     try {
       if (!fs.existsSync(this._path)) {
-        this._set([]);
+        this._list = [];
         this._save();
 
         return;
@@ -27,7 +27,7 @@ class Blacklist {
 
       const source = fs.readFileSync(this._path);
 
-      this._set(JSON.parse(source));
+      this._list = JSON.parse(source);
     } catch (err) {
       console.log(now(), `[libs/Blacklist#_load()] ${err}`);
     }
@@ -37,15 +37,10 @@ class Blacklist {
     try {
       const source = JSON.stringify(this._list, null, 2);
 
-      fs.writeFileSync(this._path, source);
+      // fs.writeFileSync(this._path, source);
     } catch (err) {
       console.log(now(), `[libs/Blacklist#_save()] ${err}`);
     }
-  }
-
-  _set(newList) {
-    this._list = newList;
-    this._listLowerCase = R.map((userId) => userId.toLowerCase(), newList);
   }
 
   get() {
@@ -53,13 +48,16 @@ class Blacklist {
   }
 
   has(userId) {
-    return this._list.includes(userId) || this._listLowerCase.includes(userId);
+    return this._list.includes(userId.toLowerCase());
   }
 
   add(userIds) {
     try {
-      const newList = R.uniq(matchSorter([...this._list, ...userIds], ""));
-      this._set(newList);
+      this._list = R.pipe(
+        () => matchSorter([...this._list, ...userIds], ""),
+        R.uniq,
+        R.map(R.toLower)
+      )();
 
       this._save();
     } catch (err) {
