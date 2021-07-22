@@ -73,7 +73,13 @@ yargs.command(
 yargs.command(
   "suggest",
   "Suggest potential team leaders to contact for new teams (Teams Sheet).",
-  () => void 0,
+  (yargs) =>
+    yargs.option("blacklist", {
+      alias: "B",
+      type: "boolean",
+      description: "Suggest leaders to blacklist for not replying.",
+      default: false,
+    }),
   suggest
 );
 
