@@ -34,13 +34,13 @@ yargs.command(
         demandOption: true,
       })
       .option("excluded", {
-        alias: "x",
+        alias: "X",
         type: "boolean",
         description: "List excluded teams (from the Teams Sheet).",
         default: false,
       })
       .option("new", {
-        alias: "n",
+        alias: "N",
         type: "boolean",
         description:
           `Copy new teams added to the provided tournament in TSV format ` +
