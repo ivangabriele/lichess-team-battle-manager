@@ -12,7 +12,7 @@ async function invite({ byHand, tournamentId }) {
     const teamsSheetList = await teamsSheet.get();
 
     const newTeams = R.filter(
-      ({ isContacted }) => !isContacted,
+      ({ hasAccepted, isContacted }) => !isContacted && !hasAccepted,
       teamsSheetList
     );
 
