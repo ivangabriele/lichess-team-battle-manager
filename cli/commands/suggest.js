@@ -96,7 +96,7 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
         getCountryFromCountryCode(lichessUser.profile?.country),
         lichessUser.url,
         lichessUser.id === lichessTeam.leader.id ? `👑` : ``,
-        blacklist.has(lichessUser.id) ? `❗` : ``,
+        blacklist.has(lichessUser.id) ? `❗` : `✅`,
       ]);
     }
 

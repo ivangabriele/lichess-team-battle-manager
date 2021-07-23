@@ -51,7 +51,7 @@ async function check({ tournamentId }) {
         (hasJoined && !sheetRegisteredTeamIds.includes(teamPair[0])) ||
         (!hasJoined && sheetRegisteredTeamIds.includes(teamPair[0]))
           ? `❗`
-          : ``,
+          : `✅`,
       ]);
     }
 

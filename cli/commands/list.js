@@ -31,7 +31,7 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
             id,
             name,
             note,
-            tournamentTeamIds.includes(id) ? `❗` : ``,
+            tournamentTeamIds.includes(id) ? `❗` : `✅`,
           ]);
         })
       )(teamsSheetList);
