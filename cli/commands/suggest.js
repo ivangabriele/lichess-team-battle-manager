@@ -48,6 +48,7 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
         `Country`,
         `URL`,
         ``,
+        ``,
       ],
     });
 
@@ -94,6 +95,7 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
         lichessUser.profile?.fideRating ? lichessUser.profile.fideRating : `-`,
         getCountryFromCountryCode(lichessUser.profile?.country),
         lichessUser.url,
+        lichessUser.id === lichessTeam.leader.id ? `👑` : ``,
         blacklist.has(lichessUser.id) ? `❗` : ``,
       ]);
     }
