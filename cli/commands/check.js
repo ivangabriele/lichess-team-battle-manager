@@ -35,7 +35,7 @@ async function check({ tournamentId }) {
         "0"
       )}/${indexMax} Checking team: ${teamPair[1]}…`;
       const { data: teamTournamentsData } = await requester.get(
-        `/api/team/${teamPair[0]}/arena`
+        `/api/team/${teamPair[0]}/arena?max=200`
       );
       const teamTournaments =
         normalizeLichessTournamentsList(teamTournamentsData);
