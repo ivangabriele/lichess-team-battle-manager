@@ -19,6 +19,9 @@ function getCountryFromCountryCode(countryCode) {
       case countryCode === `_belarus-wrw`:
         return `Belarus White-red-white`;
 
+      case countryCode === `_earth`:
+        return `Earth`;
+
       case countryCode === `_lichess`:
         return `Lichess`;
 
