@@ -22,7 +22,7 @@ async function list({ excluded: isExcluded, new: isNew, tournamentId }) {
         head: [`Id`, `Name`, `Note`, ``],
       });
 
-      const teamsSheetList = await teamsSheet.get();
+      const teamsSheetList = await teamsSheet.getAll();
       const tournamentTeamIds = R.map(([teamId]) => teamId, teamPairs);
       R.pipe(
         R.filter(({ isExcluded }) => isExcluded),
