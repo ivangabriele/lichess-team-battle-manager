@@ -30,6 +30,10 @@ async function invite({ byHand, tournamentId }) {
         continue;
       }
 
+      console.log(
+        `First time invitation will be sent to @${leaderId} for the team: ${name}.`
+      );
+
       const message = generateMessage(
         "firstTime",
         leaderName,
@@ -48,9 +52,7 @@ async function invite({ byHand, tournamentId }) {
       }
 
       await requester.post(`/inbox/${leaderId}`, { text: message });
-      console.log(
-        `First time invitation sent to @${leaderId} for the team: ${name}.`
-      );
+      console.log(`Invitation sent ✅.`);
 
       if (index < indexMax - 1) {
         // Limited by the API Rate Limit:
