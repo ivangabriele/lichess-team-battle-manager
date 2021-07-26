@@ -8,7 +8,7 @@ const getCountryFromCountryCode = require("../helpers/getCountryFromCountryCode"
 const now = require("../helpers/now");
 const blacklist = require("../libs/blacklist");
 const requester = require("../libs/requester");
-const teamsSheet = require("../libs/teamsSheet");
+const leadsSheet = require("../libs/leadsSheet");
 
 const WEIGHTING = {
   HAS_TITLE: 10,
@@ -18,16 +18,16 @@ const WEIGHTING = {
 
 async function suggest({ blacklist: isBlacklist, tournamentId }) {
   try {
-    const teamsSheetList = await teamsSheet.get();
+    const leadsSheetList = await leadsSheet.get();
 
     if (isBlacklist) {
-      const teamsSheetSilentLeaderIds = R.pipe(
+      const leadsSheetSilentLeaderIds = R.pipe(
         R.filter(({ hasAccepted, hasReplied }) => !hasReplied && !hasAccepted),
         R.map(R.prop("leaderId"))
-      )(teamsSheetList);
+      )(leadsSheetList);
 
       const oldBlacklist = blacklist.get();
-      blacklist.add(teamsSheetSilentLeaderIds);
+      blacklist.add(leadsSheetSilentLeaderIds);
       const newBlacklist = blacklist.get();
 
       const counter = newBlacklist.length - oldBlacklist.length;
@@ -52,22 +52,22 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
       ],
     });
 
-    const teamsSheetLeaderlessTeamIds = R.pipe(
+    const leadsSheetLeaderlessTeamIds = R.pipe(
       R.filter(({ isExcluded }) => !isExcluded),
       R.filter(
         ({ leaderId, leaderName }) =>
           leaderId === null || leaderName === null || blacklist.has(leaderId)
       )
-    )(teamsSheetList);
+    )(leadsSheetList);
 
-    if (teamsSheetLeaderlessTeamIds.length === 0) {
+    if (leadsSheetLeaderlessTeamIds.length === 0) {
       console.log(`There is no leaderless team.`);
 
       return;
     }
 
-    const teamId = teamsSheetLeaderlessTeamIds[0].id;
-    const teamName = teamsSheetLeaderlessTeamIds[0].name;
+    const teamId = leadsSheetLeaderlessTeamIds[0].id;
+    const teamName = leadsSheetLeaderlessTeamIds[0].name;
     console.log(`Team: ${teamName}`);
 
     const { data: lichessTeam } = await requester.get(`/api/team/${teamId}`);
@@ -77,9 +77,7 @@ async function suggest({ blacklist: isBlacklist, tournamentId }) {
     let index = -1;
     while (++index < indexMax) {
       const leaderId = leaderIds[index];
-      const { data: lichessUser } = await requester.get(
-        `/api/user/${leaderId}`
-      );
+      const { data: lichessUser } = await requester.get(`/api/user/${leaderId}`);
 
       if (lichessUser.closed === true) {
         continue;

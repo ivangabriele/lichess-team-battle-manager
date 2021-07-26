@@ -5,9 +5,10 @@ const Table = require("cli-table3");
 const normalizeLichessTournamentsList = require("../helpers/normalizeLichessTournamentsList");
 const now = require("../helpers/now");
 const requester = require("../libs/requester");
+const leadsSheet = require("../libs/leadsSheet");
 const teamsSheet = require("../libs/teamsSheet");
 
-async function check({ tournamentId }) {
+async function checkFutureTournament() {
   try {
     const spinner = ora().start();
     const table = new Table({
@@ -20,9 +21,7 @@ async function check({ tournamentId }) {
       R.map(({ id }) => id)
     )(teamsSheetList);
 
-    const { data: tournamentData } = await requester.get(
-      `/api/tournament/${tournamentId}`
-    );
+    const { data: tournamentData } = await requester.get(`/api/tournament/${tournamentId}`);
 
     const teamPairs = R.toPairs(tournamentData.teamBattle.teams);
     const indexMax = teamPairs.length;
@@ -30,19 +29,15 @@ async function check({ tournamentId }) {
     let index = -1;
     while (++index < indexMax) {
       const teamPair = teamPairs[index];
-      spinner.text = `${String(index + 1).padStart(
-        2,
-        "0"
-      )}/${indexMax} Checking team: ${teamPair[1]}…`;
+      spinner.text = `${String(index + 1).padStart(2, "0")}/${indexMax} Checking team: ${
+        teamPair[1]
+      }…`;
       const { data: teamTournamentsData } = await requester.get(
         `/api/team/${teamPair[0]}/arena?max=200`
       );
-      const teamTournaments =
-        normalizeLichessTournamentsList(teamTournamentsData);
+      const teamTournaments = normalizeLichessTournamentsList(teamTournamentsData);
 
-      const hasJoined = Boolean(
-        R.find(({ id }) => id === tournamentId, teamTournaments)
-      );
+      const hasJoined = Boolean(R.find(({ id }) => id === tournamentId, teamTournaments));
 
       counter += Number(hasJoined);
       table.push([
@@ -58,6 +53,16 @@ async function check({ tournamentId }) {
     spinner.stop();
     console.log(table.toString());
     console.log(`${counter}/${teamPairs.length} teams are registered.`);
+  } catch (err) {
+    console.log(now(), `[commands/check#checkFutureTournament()] ${err}`);
+  }
+}
+
+async function check({ tournamentId }) {
+  try {
+    const { data: tournamentData } = await requester.get(`/api/tournament/${tournamentId}`);
+
+    console.log(tournamentData);
   } catch (err) {
     console.log(now(), `[commands/check()] ${err}`);
   }

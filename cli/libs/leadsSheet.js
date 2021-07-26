@@ -5,31 +5,31 @@ const now = require("../helpers/now");
 const { GOOGLE_SHEET_ID } = process.env;
 
 // https://www.freecodecamp.org/news/cjn-google-sheets-as-json-endpoint/
-const GOOGLE_SHEET_TEAMS_URL = [
+const GOOGLE_SHEET_LEADS_URL = [
   `https://spreadsheets.google.com/feeds/cells/`,
   GOOGLE_SHEET_ID,
-  `/2/public/full?alt=json`,
+  `/1/public/full?alt=json`,
 ].join("");
 
-class TeamsSheet {
+class LeadsSheet {
   constructor() {
     this._rows = [];
   }
 
   async _load() {
     try {
-      const { data: teamsData } = await requester.get(GOOGLE_SHEET_TEAMS_URL);
+      const { data: teamsData } = await requester.get(GOOGLE_SHEET_LEADS_URL);
 
       this._rows = normalizeGoogleSheetData(teamsData.feed.entry);
     } catch (err) {
-      console.log(now(), `[libs/TeamsSheet#load()] ${err}`);
+      console.log(now(), `[libs/LeadsSheet#load()] ${err}`);
     }
   }
 
   async get() {
     await this._load();
 
-    return this._rows.filter(({ isSpecial }) => !isSpecial);
+    return this._rows.filter(({ isExcluded, isSpecial }) => !isExcluded && !isSpecial);
   }
 
   async getAll() {
@@ -42,7 +42,7 @@ class TeamsSheet {
     try {
       return (await this.get()).map(({ id }) => id);
     } catch (err) {
-      console.log(now(), `[libs/TeamsSheet#getIds()] ${err}`);
+      console.log(now(), `[libs/LeadsSheet#getIds()] ${err}`);
     }
   }
 
@@ -50,9 +50,9 @@ class TeamsSheet {
     try {
       return (await this.getAll()).map(({ id }) => id);
     } catch (err) {
-      console.log(now(), `[libs/TeamsSheet#getIds()] ${err}`);
+      console.log(now(), `[libs/LeadsSheet#getIds()] ${err}`);
     }
   }
 }
 
-module.exports = new TeamsSheet();
+module.exports = new LeadsSheet();

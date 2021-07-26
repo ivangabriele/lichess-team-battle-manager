@@ -61,10 +61,10 @@ yargs.command(
         description: "Tournament ID.",
         demandOption: true,
       })
-      .option("by-hand", {
-        alias: "H",
+      .option("new", {
+        alias: "N",
         type: "boolean",
-        description: "Generate inbox link and clipboard text.",
+        description: `Send invitations to lead teams' leaders.`,
         default: false,
       }),
   invite

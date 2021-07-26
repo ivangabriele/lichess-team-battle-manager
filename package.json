@@ -1,24 +1,16 @@
 {
-  "name": "lichess-team-battle-manager",
+  "name": "ltbm",
   "description": "A simple tool to manage regular Lichess Team Battles.",
   "version": "0.0.0",
   "license": "MIT",
-  "bin": {
-    "ltbm": "./cli/index.js"
-  },
+  "private": true,
+  "bin": "./cli/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start:cli": "yarn workspace ltbm-cli start",
+    "start:desktop": "yarn workspace ltbm-desktop start"
   },
-  "dependencies": {
-    "axios": "0.21.1",
-    "cli-table3": "0.6.0",
-    "clipboardy": "2.3.0",
-    "dotenv": "10.0.0",
-    "i18n-iso-countries": "6.8.0",
-    "match-sorter": "6.3.0",
-    "moment": "2.29.1",
-    "ora": "5.4.1",
-    "ramda": "0.27.1",
-    "yargs": "17.0.1"
-  }
+  "workspaces": [
+    "cli",
+    "desktop"
+  ]
 }
