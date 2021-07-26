@@ -172,6 +172,5 @@ temp/
 /data/*
 !/data/.gitkeep
 
-*.log
-
 .env
+*.log
