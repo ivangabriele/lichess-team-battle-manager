@@ -1497,6 +1497,7 @@ __metadata:
     match-sorter: 6.3.0
     moment: 2.29.1
     ora: 5.4.1
+    ordinal: 1.0.3
     ramda: 0.27.1
     yargs: 17.1.1
   languageName: unknown
@@ -1719,6 +1720,13 @@ __metadata:
     strip-ansi: ^6.0.0
     wcwidth: ^1.0.1
   checksum: 589ac687d6dfbac970f1bf4ec94f3e1cfc9e2a4dd4727a0c60dfcdef138f59b5de5694447881fa5a2793a91f0b2619a96bdd3d5425be30d155540abbe1df95b9
+  languageName: node
+  linkType: hard
+
+"ordinal@npm:1.0.3":
+  version: 1.0.3
+  resolution: "ordinal@npm:1.0.3"
+  checksum: b4d0b6cfb2d485090f7d72bd1e4a269f4dd9b54990f1d384952be70f734a93b20044866cfddfc5ce9c504c1a2ab36e4f82d94787bece63f437a834ac0efc0565
   languageName: node
   linkType: hard
 

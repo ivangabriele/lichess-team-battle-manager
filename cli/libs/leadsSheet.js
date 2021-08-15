@@ -21,7 +21,7 @@ class LeadsSheet {
     try {
       const { data: leadsSheetDataCsv } = await requester.get(GOOGLE_SHEET_LEADS_URL)
 
-      this._rows = normalizeGoogleSheetData(leadsSheetDataCsv)
+      this._rows = await normalizeGoogleSheetData(leadsSheetDataCsv)
     } catch (err) {
       console.error(now(), `[libs/LeadsSheet#load()] ${err}`)
     }
@@ -30,7 +30,7 @@ class LeadsSheet {
   async get() {
     await this._load()
 
-    return this._rows.filter(({ isExcluded, isSpecial }) => !isExcluded && !isSpecial)
+    return this._rows.filter(({ hasReplied, hasRefused }) => !hasReplied && !hasRefused)
   }
 
   async getAll() {
