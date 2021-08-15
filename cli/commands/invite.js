@@ -12,7 +12,7 @@ async function inviteNewTeam(tournamentId) {
   try {
     const leadsSheetList = await leadsSheet.get()
 
-    const newTeams = R.filter(({ hasAccepted, isContacted }) => !isContacted && !hasAccepted, leadsSheetList)
+    const newTeams = R.filter(({ isContacted }) => !isContacted, leadsSheetList)
 
     if (newTeams.length === 0) {
       console.info(`All leads have been invited.`)
@@ -35,16 +35,17 @@ async function inviteNewTeam(tournamentId) {
       })
 
       console.info(`First time invitation will be sent to @${leaderId} for the team: ${name}.`)
-      // console.log(message);
+      // console.log(message)
+      // console.log()
       await requester.post(`/inbox/${leaderId}`, { text: message })
       console.info(`Invitation sent ✅.`)
 
-      if (index < indexMax - 1) {
+      if (index < indexMax) {
         // Limited by the API Rate Limit:
         // It should be 25 * 20 = 500/d but is it rather 3/h?
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L44
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L33
-        await spinFor(1)
+        await spinFor(20)
       }
     }
   } catch (err) {

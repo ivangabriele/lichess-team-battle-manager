@@ -14,7 +14,7 @@ async function suggest({ blacklist: isBlacklist }) {
 
     if (isBlacklist) {
       const leadsSheetSilentLeaderIds = R.pipe(
-        R.filter(({ hasAccepted, hasReplied }) => !hasReplied && !hasAccepted),
+        R.filter(({ isContacted, hasReplied }) => isContacted && !hasReplied),
         R.map(R.prop('leaderId')),
       )(leadsSheetList)
 
