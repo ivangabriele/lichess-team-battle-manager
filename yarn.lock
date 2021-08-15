@@ -481,6 +481,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csv-parse@npm:4.16.0":
+  version: 4.16.0
+  resolution: "csv-parse@npm:4.16.0"
+  checksum: 64f23d30a1eb3662df0727e6680af50605cb275c7c0646f2e0d235895c39ebf0a19ad451c7048d78682c8e0178d155d5ba79684bdc83397231b34a5456fe3631
+  languageName: node
+  linkType: hard
+
 "debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -1484,6 +1491,7 @@ __metadata:
     axios: 0.21.1
     cli-table3: 0.6.0
     clipboardy: 2.3.0
+    csv-parse: 4.16.0
     dotenv: 10.0.0
     i18n-iso-countries: 6.8.0
     match-sorter: 6.3.0
