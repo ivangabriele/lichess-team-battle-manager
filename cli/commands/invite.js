@@ -1,141 +1,135 @@
-const clipboardy = require("clipboardy");
-const R = require("ramda");
+const R = require('ramda')
 
-const generateMessage = require("../helpers/generateMessage");
-const now = require("../helpers/now");
-const spinFor = require("../helpers/spinFor");
-const leadsSheet = require("../libs/leadsSheet");
-const requester = require("../libs/requester");
-const teamsSheet = require("../libs/teamsSheet");
+const generateMessage = require('../helpers/generateMessage')
+const now = require('../helpers/now')
+const spinFor = require('../helpers/spinFor')
+const leadsSheet = require('../libs/leadsSheet')
+const requester = require('../libs/requester')
+const teamsSheet = require('../libs/teamsSheet')
 
 async function inviteNewTeam(tournamentId) {
   try {
-    const leadsSheetList = await leadsSheet.get();
+    const leadsSheetList = await leadsSheet.get()
 
-    const newTeams = R.filter(
-      ({ hasAccepted, isContacted }) => !isContacted && !hasAccepted,
-      leadsSheetList
-    );
+    const newTeams = R.filter(({ hasAccepted, isContacted }) => !isContacted && !hasAccepted, leadsSheetList)
 
     if (newTeams.length === 0) {
-      console.log(`All leads have been invited.`);
+      console.info(`All leads have been invited.`)
 
-      return;
+      return
     }
 
-    const indexMax = newTeams.length;
-    let index = -1;
+    const indexMax = newTeams.length
+    let index = -1
     while (++index < indexMax) {
-      const { leaderId, leaderName, name } = newTeams[index];
+      const { leaderId, leaderName, name } = newTeams[index]
       if (leaderName === null) {
-        continue;
+        continue
       }
 
-      const message = generateMessage("firstBis", {
+      const message = generateMessage('first', {
         LEADER_NAME: leaderName,
         TEAM_NAME: name,
         TOURNAMENT_ID: tournamentId,
-      });
+      })
 
-      console.log(`First time invitation will be sent to @${leaderId} for the team: ${name}.`);
+      console.info(`First time invitation will be sent to @${leaderId} for the team: ${name}.`)
       // console.log(message);
-      await requester.post(`/inbox/${leaderId}`, { text: message });
-      console.log(`Invitation sent ✅.`);
+      await requester.post(`/inbox/${leaderId}`, { text: message })
+      console.info(`Invitation sent ✅.`)
 
       if (index < indexMax - 1) {
         // Limited by the API Rate Limit:
         // It should be 25 * 20 = 500/d but is it rather 3/h?
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L44
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L33
-        await spinFor(20);
+        await spinFor(1)
       }
     }
   } catch (err) {
-    console.log(now(), `[commands/invite#inviteNewTeam()] ${err}`);
-    console.log(now(), `[commands/invite#inviteNewTeam()] ${err?.response?.data?.error}`);
+    console.error(now(), `[commands/invite#inviteNewTeam()] ${err}`)
+    console.error(now(), `[commands/invite#inviteNewTeam()] ${err?.response?.data?.error}`)
   }
 }
 
 async function invite({ new: isNew, tournamentId }) {
   try {
     if (isNew) {
-      await inviteNewTeam(tournamentId);
+      await inviteNewTeam(tournamentId)
 
-      return;
+      return
     }
 
-    const teamsSheetList = await teamsSheet.get();
+    const teamsSheetList = await teamsSheet.get()
 
-    const nonInvitedTeams = R.filter(({ isInvited }) => !isInvited, teamsSheetList);
+    const nonInvitedTeams = R.filter(({ isInvited }) => !isInvited, teamsSheetList)
 
     if (nonInvitedTeams.length === 0) {
-      console.log(`All teams have been invited.`);
+      console.info(`All teams have been invited.`)
 
-      return;
+      return
     }
 
-    const indexMax = nonInvitedTeams.length;
-    let index = -1;
+    const indexMax = nonInvitedTeams.length
+    let index = -1
     while (++index < indexMax) {
-      const { isCoupled, leaderId, leaderName, name, rank } = nonInvitedTeams[index];
+      const { isCoupled, leaderId, leaderName, name, rank } = nonInvitedTeams[index]
       if (leaderName === null || isCoupled) {
-        continue;
+        continue
       }
 
       const coupledNames = R.pipe(
-        R.filter(
-          ({ isCoupled: _isCoupled, leaderId: _leaderId }) => _leaderId === leaderId && _isCoupled
-        ),
-        R.map(({ name: _name }) => _name)
-      )(nonInvitedTeams);
+        R.filter(({ isCoupled: _isCoupled, leaderId: _leaderId }) => _leaderId === leaderId && _isCoupled),
+        R.map(({ name: _name }) => _name),
+      )(nonInvitedTeams)
 
-      let message;
+      let message
       if (coupledNames.length !== 0) {
-        const names = [name, ...coupledNames].join(`, `);
-        message = generateMessage("multiple", {
+        const names = [name, ...coupledNames].join(`, `)
+        message = generateMessage('multiple', {
           LEADER_NAME: leaderName,
           TEAM_NAME: names,
           TOURNAMENT_ID: tournamentId,
-        });
+        })
 
-        console.log(`Normal invitation will be sent to @${leaderId} for the teams: ${names}.`);
+        console.info(`Normal invitation will be sent to @${leaderId} for the teams: ${names}.`)
       } else if (rank !== null) {
-        const names = [name, ...coupledNames].join(`, `);
-        message = generateMessage("podium", {
+        const names = [name, ...coupledNames].join(`, `)
+        message = generateMessage('podium', {
           LEADER_NAME: leaderName,
           RANK: rank,
           TEAM_NAME: names,
           TOURNAMENT_ID: tournamentId,
-        });
+        })
 
-        console.log(`Podium invitation will be sent to @${leaderId} for the teams: ${names}.`);
+        console.info(`Podium invitation will be sent to @${leaderId} for the teams: ${names}.`)
       } else {
-        message = generateMessage("normal", {
+        message = generateMessage('normal', {
           LEADER_NAME: leaderName,
           TEAM_NAME: name,
           TOURNAMENT_ID: tournamentId,
-        });
+        })
 
-        console.log(`Normal invitation will be sent to @${leaderId} for the team: ${name}.`);
+        console.info(`Normal invitation will be sent to @${leaderId} for the team: ${name}.`)
       }
 
       // console.log(message);
       // console.log();
-      await requester.post(`/inbox/${leaderId}`, { text: message });
-      console.log(`Invitation sent ✅.`);
+      await requester.post(`/inbox/${leaderId}`, { text: message })
+      console.info(`Invitation sent ✅.`)
 
       if (index < indexMax - 1) {
         // Limited by the API Rate Limit:
         // It should be 25 * 20 = 500/d but is it rather 3/h?
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L44
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L33
-        await spinFor(5);
+        await spinFor(3)
       }
     }
   } catch (err) {
-    console.log(now(), `[commands/invite()] ${err}`);
-    console.log(now(), `[commands/invite()] ${err?.response?.data?.error}`);
+    console.error(now(), `[commands/invite()] ${err}`)
+    console.error(now(), `[commands/invite()] ${err?.response?.data?.error}`)
   }
 }
 
-module.exports = invite;
+module.exports = invite

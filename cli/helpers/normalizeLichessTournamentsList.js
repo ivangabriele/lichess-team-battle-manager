@@ -1,25 +1,28 @@
-const now = require("./now");
+const now = require('./now')
 
 function normalizeLichessTournamentsList(tournamentsData) {
-  if (typeof tournamentsData === "object") {
-    return [tournamentsData];
+  if (typeof tournamentsData === 'object') {
+    return [tournamentsData]
   }
 
   if (tournamentsData.length === 0) {
-    return [];
+    return []
   }
 
   try {
     return tournamentsData.split(/\n/).reduce((currentArenas, arenaJson) => {
       try {
-        currentArenas.push(JSON.parse(arenaJson.trim()));
+        currentArenas.push(JSON.parse(arenaJson.trim()))
+        // eslint-disable-next-line no-empty
       } catch (err) {}
 
-      return currentArenas;
-    }, []);
+      return currentArenas
+    }, [])
   } catch (err) {
-    console.log(now(), `[helpers/normalizeLichessTournamentsList()] ${err}`);
+    console.error(now(), `[helpers/normalizeLichessTournamentsList()] ${err}`)
+
+    return []
   }
 }
 
-module.exports = normalizeLichessTournamentsList;
+module.exports = normalizeLichessTournamentsList
