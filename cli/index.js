@@ -45,14 +45,20 @@ yargs.command(
 )
 
 yargs.command(
-  'invite [tournamentId]',
+  'invite [nextTournamentId] [previousTournamentId]',
   'Send invitations to team leaders for the provided tournament.',
   _yargs =>
     _yargs
-      .positional('tournamentId', {})
-      .option('tournamentId', {
+      .positional('nextTournamentId', {})
+      .positional('previousTournamentId', {})
+      .option('nextTournamentId', {
         demandOption: true,
-        description: 'Tournament ID.',
+        description: 'Next tournament ID.',
+        type: 'string',
+      })
+      .option('previousTournamentId', {
+        demandOption: true,
+        description: 'Previous tournament ID.',
         type: 'string',
       })
       .option('new', {

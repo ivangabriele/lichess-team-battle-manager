@@ -1,3 +1,4 @@
+const ordinal = require('ordinal')
 const R = require('ramda')
 
 const generateMessage = require('../helpers/generateMessage')
@@ -52,18 +53,20 @@ async function inviteNewTeam(tournamentId) {
   }
 }
 
-async function invite({ new: isNew, tournamentId }) {
+async function invite({ new: isNew, nextTournamentId, previousTournamentId }) {
   try {
     if (isNew) {
-      await inviteNewTeam(tournamentId)
+      await inviteNewTeam(nextTournamentId)
 
       return
     }
 
+    const { data: lichessPreviousTournamentData } = await requester.get(`/api/tournament/${previousTournamentId}`)
+    const podiumTeams = lichessPreviousTournamentData.teamStanding
+    const podiumTeamIds = R.map(R.prop('id'))(podiumTeams)
+
     const teamsSheetList = await teamsSheet.get()
-
     const nonInvitedTeams = R.filter(({ isInvited }) => !isInvited, teamsSheetList)
-
     if (nonInvitedTeams.length === 0) {
       console.info(`All teams have been invited.`)
 
@@ -73,48 +76,35 @@ async function invite({ new: isNew, tournamentId }) {
     const indexMax = nonInvitedTeams.length
     let index = -1
     while (++index < indexMax) {
-      const { isCoupled, leaderId, leaderName, name, rank } = nonInvitedTeams[index]
-      if (leaderName === null || isCoupled) {
+      const { id, leaderId, leaderName, name } = nonInvitedTeams[index]
+      if (leaderName === null) {
         continue
       }
 
-      const coupledNames = R.pipe(
-        R.filter(({ isCoupled: _isCoupled, leaderId: _leaderId }) => _leaderId === leaderId && _isCoupled),
-        R.map(({ name: _name }) => _name),
-      )(nonInvitedTeams)
-
       let message
-      if (coupledNames.length !== 0) {
-        const names = [name, ...coupledNames].join(`, `)
-        message = generateMessage('multiple', {
-          LEADER_NAME: leaderName,
-          TEAM_NAME: names,
-          TOURNAMENT_ID: tournamentId,
-        })
+      if (podiumTeamIds.includes(id)) {
+        const podiumTeam = podiumTeams.find(R.propEq('id', id))
 
-        console.info(`Normal invitation will be sent to @${leaderId} for the teams: ${names}.`)
-      } else if (rank !== null) {
-        const names = [name, ...coupledNames].join(`, `)
         message = generateMessage('podium', {
           LEADER_NAME: leaderName,
-          RANK: rank,
-          TEAM_NAME: names,
-          TOURNAMENT_ID: tournamentId,
+          RANK: ordinal(podiumTeam.rank),
+          TEAM_NAME: name,
+          TOURNAMENT_ID: nextTournamentId,
         })
 
-        console.info(`Podium invitation will be sent to @${leaderId} for the teams: ${names}.`)
+        console.info(`Podium invitation will be sent to @${leaderId} for the team: ${name}.`)
       } else {
         message = generateMessage('normal', {
           LEADER_NAME: leaderName,
           TEAM_NAME: name,
-          TOURNAMENT_ID: tournamentId,
+          TOURNAMENT_ID: nextTournamentId,
         })
 
         console.info(`Normal invitation will be sent to @${leaderId} for the team: ${name}.`)
       }
 
-      // console.log(message);
-      // console.log();
+      // console.log(message)
+      // console.log()
       await requester.post(`/inbox/${leaderId}`, { text: message })
       console.info(`Invitation sent ✅.`)
 
