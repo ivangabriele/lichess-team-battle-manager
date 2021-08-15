@@ -17,6 +17,7 @@
     "match-sorter": "6.3.0",
     "moment": "2.29.1",
     "ora": "5.4.1",
+    "ordinal": "1.0.3",
     "ramda": "0.27.1",
     "yargs": "17.1.1"
   }
