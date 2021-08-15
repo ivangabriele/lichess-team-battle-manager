@@ -1,0 +1,10 @@
+{
+  "name": "ltbm-extension",
+  "description": "A simple web extension to manage regular Lichess Team Battles.",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/chrome": "0.0.154"
+  }
+}

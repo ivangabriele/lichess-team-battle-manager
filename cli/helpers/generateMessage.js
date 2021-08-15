@@ -1,20 +1,20 @@
-const R = require("ramda");
-
-const MESSAGES = require("../messages.json");
-
-const now = require("./now");
+const MESSAGES = require('../messages.json')
+const now = require('./now')
 
 function generateMessage(messageKey, props) {
   try {
-    let message = MESSAGES[messageKey];
+    let message = MESSAGES[messageKey]
+    // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(props)) {
-      message = message.replace(`{${key}}`, value);
+      message = message.replace(`{${key}}`, value)
     }
 
-    return message;
+    return message
   } catch (err) {
-    console.log(now(), `[helpers/generateMessage()] ${err}`);
+    console.error(now(), `[helpers/generateMessage()] ${err}`)
+
+    return ''
   }
 }
 
-module.exports = generateMessage;
+module.exports = generateMessage

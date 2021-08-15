@@ -1,0 +1,14 @@
+{
+  "extends": "@ivangabriele/eslint-config-base",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "ignorePatterns": ["/.yarn/"],
+  "rules": {
+    "no-await-in-loop": "off",
+    "no-console": ["error", { "allow": ["error", "info", "warn"] }],
+    "no-continue": "off",
+    "no-plusplus": "off",
+    "no-underscore-dangle": "off"
+  }
+}
