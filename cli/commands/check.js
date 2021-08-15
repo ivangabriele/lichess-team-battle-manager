@@ -54,8 +54,68 @@ async function checkFutureTournament(tournamentId) {
   }
 }
 
-async function check({ tournamentId }) {
+async function checkTournamentSychronization(tournamentId) {
   try {
+    const table = new Table({
+      head: [`Id`, `Name`, `Teams Sheet`, `Team Battle`, `Active`],
+    })
+
+    const teamsSheetTeams = await teamsSheet.getAll()
+    const teamsSheetTeamIds = await teamsSheet.getAllIds()
+
+    const { data: lichessTeamBattleData } = await requester.get(`/api/tournament/${tournamentId}`)
+    const lichessTeamBattleTeams = R.pipe(
+      R.toPairs,
+      R.map(([teamId, teamName]) => ({ id: teamId, name: teamName })),
+    )(lichessTeamBattleData.teamBattle.teams)
+    const lichessTeamBattleTeamIds = R.map(R.prop('id'))(lichessTeamBattleTeams)
+
+    const bothTeamIds = R.pipe(R.sortBy(R.prop(0)), R.uniq)([...teamsSheetTeamIds, ...lichessTeamBattleTeamIds])
+
+    const { data: inactiveTeamIds } = await requester.get(
+      `https://battle.world-classicals.com/data/inactive-team-ids.json`,
+    )
+
+    table.push(
+      ...R.reduce((tableRows, teamId) => {
+        const isInTeamsSheet = R.includes(teamId)(teamsSheetTeamIds)
+        const isInLichessTeamBattle = R.includes(teamId)(lichessTeamBattleTeamIds)
+        const isActive = !R.includes(teamId)(inactiveTeamIds)
+
+        if (isInTeamsSheet && isInLichessTeamBattle && isActive) {
+          return tableRows
+        }
+
+        const name = isInTeamsSheet
+          ? R.find(R.propEq('id', teamId))(teamsSheetTeams).name
+          : R.find(R.propEq('id', teamId))(lichessTeamBattleTeams).name
+
+        const newRow = [
+          teamId,
+          name,
+          isInTeamsSheet ? `✅` : `❌`,
+          isInLichessTeamBattle ? `✅` : `❌`,
+          isActive ? `✅` : `❌`,
+        ]
+
+        return [...tableRows, newRow]
+      }, [])(bothTeamIds),
+    )
+
+    console.info(table.toString())
+  } catch (err) {
+    console.error(now(), `[commands/check#checkTournamentSychronization()] ${err}`)
+  }
+}
+
+async function check({ tournamentId, sync: isSync }) {
+  try {
+    if (isSync) {
+      await checkTournamentSychronization(tournamentId)
+
+      return
+    }
+
     const { data: tournamentData } = await requester.get(`/api/tournament/${tournamentId}`)
 
     const tournamentEnd = moment(tournamentData.startsAt).add(12, 'hours')

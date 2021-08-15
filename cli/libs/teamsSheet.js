@@ -2,13 +2,14 @@ const normalizeGoogleSheetData = require('../helpers/normalizeGoogleSheetData')
 const now = require('../helpers/now')
 const requester = require('./requester')
 
-const { GOOGLE_SHEET_ID } = process.env
+const { GOOGLE_SHEET_ID, GOOGLE_SHEET_TEAMS_GID } = process.env
 
-// https://www.freecodecamp.org/news/cjn-google-sheets-as-json-endpoint/
 const GOOGLE_SHEET_TEAMS_URL = [
-  `https://spreadsheets.google.com/feeds/cells/`,
+  `https://docs.google.com/spreadsheets/d/e/`,
   GOOGLE_SHEET_ID,
-  `/2/public/full?alt=json`,
+  `/pub?gid=`,
+  GOOGLE_SHEET_TEAMS_GID,
+  `&single=true&output=csv`,
 ].join('')
 
 class TeamsSheet {
@@ -18,9 +19,9 @@ class TeamsSheet {
 
   async _load() {
     try {
-      const { data: teamsData } = await requester.get(GOOGLE_SHEET_TEAMS_URL)
+      const { data: teamsSheetDataCsv } = await requester.get(GOOGLE_SHEET_TEAMS_URL)
 
-      this._rows = normalizeGoogleSheetData(teamsData.feed.entry)
+      this._rows = await normalizeGoogleSheetData(teamsSheetDataCsv)
     } catch (err) {
       console.error(now(), `[libs/TeamsSheet#load()] ${err}`)
     }

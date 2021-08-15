@@ -1,33 +1,27 @@
+const _csvParse = require('csv-parse')
 const R = require('ramda')
+const { promisify } = require('util')
+
+const csvParse = promisify(_csvParse)
 
 const now = require('./now')
 
-function normalizeGoogleSheetData(feedEntry) {
+async function normalizeGoogleSheetData(csv) {
   try {
-    const cells = R.values(feedEntry)
-
-    const dataProps = R.pipe(
-      // Filter body cells out
-      R.filter(({ gs$cell: { row } }) => Number(row) === 1),
-      // Extract each cell value
-      R.map(({ content: { $t } }) => $t),
-    )(cells)
+    const rawDataAs2dArray = await csvParse(csv)
+    const dataProps = rawDataAs2dArray[0]
 
     const data = R.pipe(
       // Filter header cells out
-      R.filter(({ gs$cell: { row } }) => Number(row) !== 1),
-      // Extract each cell value
-      R.map(({ content: { $t } }) => $t),
+      R.slice(1, Infinity),
       // Convert string booleans to real ones
       // eslint-disable-next-line no-nested-ternary
-      R.map(value => (value === 'TRUE' ? true : value === 'FALSE' ? false : value)),
-      // Convert dashed values to `null`
-      R.map(value => (value === '-' ? null : value)),
-      // Split into rows
-      R.splitEvery(dataProps.length),
+      R.map(R.map(value => (value === 'TRUE' ? true : value === 'FALSE' ? false : value))),
+      // Convert empty values to `null`
+      R.map(R.map(value => (value === '' ? null : value))),
       // Transform rows into objects
       R.map(R.zipObj(dataProps)),
-    )(cells)
+    )(rawDataAs2dArray)
 
     return data
   } catch (err) {

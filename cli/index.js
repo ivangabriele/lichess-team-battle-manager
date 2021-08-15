@@ -16,11 +16,19 @@ yargs.command(
   'check [tournamentId]',
   'Check registered teams for the provided tournament ID.',
   _yargs =>
-    _yargs.positional('tournamentId', {}).option('tournamentId', {
-      demandOption: true,
-      description: 'Tournament ID.',
-      type: 'string',
-    }),
+    _yargs
+      .positional('tournamentId', {})
+      .option('tournamentId', {
+        demandOption: true,
+        description: 'Tournament ID.',
+        type: 'string',
+      })
+      .option('sync', {
+        default: false,
+        description: `Check teams list synchronization between Teams Sheet and Lichess Team Battle.`,
+        type: 'boolean',
+      }),
+
   check,
 )
 
