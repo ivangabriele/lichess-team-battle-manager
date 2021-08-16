@@ -24,7 +24,7 @@ async function inviteNewTeam(tournamentId) {
     let index = -1
     while (++index < indexMax) {
       const { leaderId, leaderName, name } = newTeams[index]
-      if (leaderName === null) {
+      if (leaderId === null || leaderName === null) {
         continue
       }
 
@@ -45,7 +45,7 @@ async function inviteNewTeam(tournamentId) {
         // It should be 25 * 20 = 500/d but is it rather 3/h?
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L44
         // https://github.com/ornicar/lila/blob/master/modules/msg/src/main/MsgSecurity.scala#L33
-        await spinFor(20)
+        await spinFor(3)
       }
     }
   } catch (err) {
