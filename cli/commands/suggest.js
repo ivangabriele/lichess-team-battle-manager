@@ -4,9 +4,12 @@ const R = require('ramda')
 
 const getCountryFromCountryCode = require('../helpers/getCountryFromCountryCode')
 const now = require('../helpers/now')
+const waitFor = require('../helpers/waitFor')
 const blacklist = require('../libs/blacklist')
+const failsSheet = require('../libs/failsSheet')
 const leadsSheet = require('../libs/leadsSheet')
 const requester = require('../libs/requester')
+const teamsSheet = require('../libs/teamsSheet')
 
 async function suggest({ blacklist: isBlacklist }) {
   try {
@@ -28,12 +31,7 @@ async function suggest({ blacklist: isBlacklist }) {
       return
     }
 
-    const table = new Table({
-      head: [`ID`, `First Name`, `Online`, `Classicals`, `Followers`, `Title`, `FIDE`, `Country`, `URL`, ``, ``],
-    })
-
     const leadsSheetLeaderlessTeamIds = R.pipe(
-      R.filter(({ isExcluded }) => !isExcluded),
       R.filter(({ leaderId, leaderName }) => leaderId === null || leaderName === null || blacklist.has(leaderId)),
     )(leadsSheetList)
 
@@ -43,39 +41,64 @@ async function suggest({ blacklist: isBlacklist }) {
       return
     }
 
-    const teamId = leadsSheetLeaderlessTeamIds[0].id
-    const teamName = leadsSheetLeaderlessTeamIds[0].name
-    console.info(`Team: ${teamName}`)
-
-    const { data: lichessTeam } = await requester.get(`/api/team/${teamId}`)
-    const leaderIds = R.map(({ id }) => id, lichessTeam.leaders)
-
-    const indexMax = leaderIds.length
     let index = -1
-    while (++index < indexMax) {
-      const leaderId = leaderIds[index]
-      const { data: lichessUser } = await requester.get(`/api/user/${leaderId}`)
+    while (++index < 5) {
+      const table = new Table({
+        head: [
+          `ID`,
+          `First Name`,
+          `Online`,
+          `Classicals`,
+          `Followers`,
+          `Title`,
+          `FIDE`,
+          `Country`,
+          `URL`,
+          ``,
+          `BL`,
+          'FS',
+          'TS',
+        ],
+      })
 
-      if (lichessUser.closed === true) {
-        continue
+      const teamId = leadsSheetLeaderlessTeamIds[index].id
+      const teamName = leadsSheetLeaderlessTeamIds[index].name
+      console.info(`Team: ${teamName}`)
+
+      const { data: lichessTeam } = await requester.get(`/api/team/${teamId}`)
+      const leaderIds = R.map(({ id }) => id, lichessTeam.leaders)
+
+      const indexBisMax = leaderIds.length
+      let indexBis = -1
+      while (++indexBis < indexBisMax) {
+        const leaderId = leaderIds[indexBis]
+        const { data: lichessUser } = await requester.get(`/api/user/${leaderId}`)
+
+        if (lichessUser.closed === true) {
+          continue
+        }
+
+        table.push([
+          lichessUser.id,
+          lichessUser.profile?.firstName ? lichessUser.profile.firstName : `-`,
+          moment(lichessUser.seenAt).fromNow(),
+          lichessUser.perfs.classical.games,
+          lichessUser.nbFollowers,
+          lichessUser.title ? lichessUser.title : `-`,
+          lichessUser.profile?.fideRating ? lichessUser.profile.fideRating : `-`,
+          getCountryFromCountryCode(lichessUser.profile?.country),
+          lichessUser.url,
+          lichessUser.id === lichessTeam.leader.id ? `👑` : ``,
+          blacklist.has(lichessUser.id) ? `❗` : `✅`,
+          (await failsSheet.hasLeaderId(lichessUser.id)) ? `❗` : `✅`,
+          (await teamsSheet.hasLeaderId(lichessUser.id)) ? `❗` : `✅`,
+        ])
       }
 
-      table.push([
-        lichessUser.id,
-        lichessUser.profile?.firstName ? lichessUser.profile.firstName : `-`,
-        moment(lichessUser.seenAt).fromNow(),
-        lichessUser.perfs.classical.games,
-        lichessUser.nbFollowers,
-        lichessUser.title ? lichessUser.title : `-`,
-        lichessUser.profile?.fideRating ? lichessUser.profile.fideRating : `-`,
-        getCountryFromCountryCode(lichessUser.profile?.country),
-        lichessUser.url,
-        lichessUser.id === lichessTeam.leader.id ? `👑` : ``,
-        blacklist.has(lichessUser.id) ? `❗` : `✅`,
-      ])
-    }
+      console.info(table.toString())
 
-    console.info(table.toString())
+      await waitFor(10000)
+    }
   } catch (err) {
     console.error(now(), `[commands/suggest()] ${err}`)
   }

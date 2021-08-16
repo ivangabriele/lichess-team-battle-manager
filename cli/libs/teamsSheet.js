@@ -1,3 +1,5 @@
+const R = require('ramda')
+
 const normalizeGoogleSheetData = require('../helpers/normalizeGoogleSheetData')
 const now = require('../helpers/now')
 const requester = require('./requester')
@@ -54,6 +56,28 @@ class TeamsSheet {
       return (await this.getAll()).map(({ id }) => id)
     } catch (err) {
       console.error(now(), `[libs/TeamsSheet#getIds()] ${err}`)
+
+      return []
+    }
+  }
+
+  async getLeaderIds() {
+    try {
+      return (await this.get()).map(({ leaderId }) => leaderId)
+    } catch (err) {
+      console.error(now(), `[libs/FailsSheet#getLeaderIds()] ${err}`)
+
+      return []
+    }
+  }
+
+  async hasLeaderId(leaderId) {
+    try {
+      const leaderIds = await this.getLeaderIds()
+
+      return R.includes(R.toLower(leaderId))(leaderIds)
+    } catch (err) {
+      console.error(now(), `[libs/TeamsSheet#getLeaderIds()] ${err}`)
 
       return []
     }
