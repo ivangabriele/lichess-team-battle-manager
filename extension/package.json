@@ -5,6 +5,6 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@types/chrome": "0.0.154"
+    "@types/chrome": "0.0.180"
   }
 }
