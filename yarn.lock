@@ -67,10 +67,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ivangabriele/prettier-config@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@ivangabriele/prettier-config@npm:1.1.0"
-  checksum: b32c2ee5c78e130d04ead5220bbf04536fa84ff9c89486507592a3ba455283bfbc4606dee679f38b8dfbb68f4c0570e2b4e55dfdd114ec17816bb815e4b7bafe
+"@ivangabriele/prettier-config@npm:3.0.2":
+  version: 3.0.2
+  resolution: "@ivangabriele/prettier-config@npm:3.0.2"
+  peerDependencies:
+    prettier: ^2.5.1
+  checksum: 5faf557bfd4634e1c35743827084dc61ab682dfca81c0e70a6af9f0ae15865aa193804fe2f6712ec74ca1d1d52de5b6cc4c4011e5c405f86e0b5e2a681b20cf8
   languageName: node
   linkType: hard
 
@@ -954,7 +956,7 @@ __metadata:
   resolution: "ltbm@workspace:."
   dependencies:
     "@ivangabriele/eslint-config-base": 3.0.1
-    "@ivangabriele/prettier-config": 1.1.0
+    "@ivangabriele/prettier-config": 3.0.2
     eslint: 8.12.0
   bin:
     ltbm: ./cli/index.js
