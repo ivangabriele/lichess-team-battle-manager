@@ -935,7 +935,7 @@ __metadata:
     dotenv: 10.0.0
     i18n-iso-countries: 6.8.0
     match-sorter: 6.3.1
-    moment: 2.29.1
+    moment: 2.29.2
     ora: 6.1.0
     ordinal: 1.0.3
     ramda: 0.28.0
@@ -989,10 +989,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:2.29.1":
-  version: 2.29.1
-  resolution: "moment@npm:2.29.1"
-  checksum: 86729013febf7160de5b93da69273dd304d674b0224f9544b3abd09a87671ddd2cdd57598261ce57588910d63747ffd5590965e83c790d8bf327083c0e0a06e0
+"moment@npm:2.29.2":
+  version: 2.29.2
+  resolution: "moment@npm:2.29.2"
+  checksum: 0969327a44aa49dc32bf510b620763c8c5a0d65308331b01ce007bc071a48d18dbd4e51018464b5c0ac415fd655206ae3e678037b08381f3330574bbd408c035
   languageName: node
   linkType: hard
 
