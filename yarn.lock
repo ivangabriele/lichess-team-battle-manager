@@ -486,9 +486,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.12.0":
-  version: 8.12.0
-  resolution: "eslint@npm:8.12.0"
+"eslint@npm:8.13.0":
+  version: 8.13.0
+  resolution: "eslint@npm:8.13.0"
   dependencies:
     "@eslint/eslintrc": ^1.2.1
     "@humanwhocodes/config-array": ^0.9.2
@@ -527,7 +527,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 8214be812ddc9c7554436030a952d6bcd0632057de93279ae1517d582aaed0e84072f18415c19464d185418833d62010cce3998729e2f404c3a42dea0f7f6696
+  checksum: 6d8bb7b02686e3ffc31e6a4e32c177148060ddf04a0def43c309786cedb7e398e10c40373bc16c75b0c5645261e5b766a1abff7565e88645330e539cd32097f3
   languageName: node
   linkType: hard
 
@@ -924,7 +924,7 @@ __metadata:
     ora: 6.1.0
     ordinal: 1.0.3
     ramda: 0.28.0
-    yargs: 17.4.0
+    yargs: 17.4.1
   languageName: unknown
   linkType: soft
 
@@ -942,7 +942,7 @@ __metadata:
   dependencies:
     "@ivangabriele/eslint-config-base": 3.0.1
     "@ivangabriele/prettier-config": 3.0.2
-    eslint: 8.12.0
+    eslint: 8.13.0
   bin:
     ltbm: ./cli/index.js
   languageName: unknown
@@ -1401,9 +1401,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:17.4.0":
-  version: 17.4.0
-  resolution: "yargs@npm:17.4.0"
+"yargs@npm:17.4.1":
+  version: 17.4.1
+  resolution: "yargs@npm:17.4.1"
   dependencies:
     cliui: ^7.0.2
     escalade: ^3.1.1
@@ -1412,6 +1412,6 @@ __metadata:
     string-width: ^4.2.3
     y18n: ^5.0.5
     yargs-parser: ^21.0.0
-  checksum: ba92f46697f1d157eba26bb91663e93bfff7c1688eade830185c8a41e04c654d34e9b036d2310eeaf9e5254e699fb62c72863a18e4ab54da78ef3b8c19685960
+  checksum: d1beeb993989958a4e5123ecbe35df7c5dc2723b33e69ee5d0f231b2fba44a96540fb9bc0443e94083cdc21ec331cac9dc87ea1f721169578e0483ef53fac45c
   languageName: node
   linkType: hard
