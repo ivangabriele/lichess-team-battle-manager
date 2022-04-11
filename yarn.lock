@@ -49,21 +49,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ivangabriele/eslint-config-base@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@ivangabriele/eslint-config-base@npm:3.0.1"
+"@ivangabriele/eslint-config-base@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@ivangabriele/eslint-config-base@npm:4.0.0"
   peerDependencies:
     "@ivangabriele/prettier-config": ^3.0.2
-    eslint: ^7.32.0
+    eslint: ^8.0.0
     eslint-config-airbnb-base: ^15.0.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.4
-    eslint-plugin-jest: ^25.7.0
+    eslint-plugin-jest: ^26.0.0
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-sort-destructure-keys: ^1.4.0
     eslint-plugin-sort-keys-fix: ^1.1.2
     prettier: ^2.5.1
-  checksum: dc794ff1cb511750ef40471679594e1c4099f81213e1cce715643aea6e0c4b5b97ec724d02b45dfb5c1853ad7aca50e2071e8d907b1f20946334f6c2c306a2bc
+  checksum: 0f99c62faee63a4d61e007d2a934e45d91184e5548efbe888e45910907b5f7f8b1f045fba660cf9afcfe67bf6ab776201c28d0517b5089bbb1cdba2faa4d3f6b
   languageName: node
   linkType: hard
 
@@ -940,7 +940,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ltbm@workspace:."
   dependencies:
-    "@ivangabriele/eslint-config-base": 3.0.1
+    "@ivangabriele/eslint-config-base": 4.0.0
     "@ivangabriele/prettier-config": 3.0.2
     eslint: 8.13.0
   bin:

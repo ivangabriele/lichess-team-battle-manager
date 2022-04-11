@@ -11,7 +11,7 @@
     "lint": "eslint --fix ."
   },
   "devDependencies": {
-    "@ivangabriele/eslint-config-base": "3.0.1",
+    "@ivangabriele/eslint-config-base": "4.0.0",
     "@ivangabriele/prettier-config": "3.0.2",
     "eslint": "8.13.0"
   },
