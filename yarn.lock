@@ -722,12 +722,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18n-iso-countries@npm:6.8.0":
-  version: 6.8.0
-  resolution: "i18n-iso-countries@npm:6.8.0"
+"i18n-iso-countries@npm:7.4.0":
+  version: 7.4.0
+  resolution: "i18n-iso-countries@npm:7.4.0"
   dependencies:
     diacritics: 1.3.0
-  checksum: 239b3da684aacdf75d4a6849f6e801f47d045c2eaa28075d4ef0a028f903a8f21651f1028b35eaab7c528394b04a2e630c6839e881a7dbdc2a4f034775307cc1
+  checksum: 3647189d6455bdb166c9f03e58b4dd539be9154ca80788f9183c56f18c955356fc6ee159f20c44d08174fa10a8c732affce42033dd26a31a4f504cee9848d510
   languageName: node
   linkType: hard
 
@@ -918,7 +918,7 @@ __metadata:
     clipboardy: 3.0.0
     csv-parse: 4.16.3
     dotenv: 10.0.0
-    i18n-iso-countries: 6.8.0
+    i18n-iso-countries: 7.4.0
     match-sorter: 6.3.1
     moment: 2.29.2
     ora: 6.1.0
