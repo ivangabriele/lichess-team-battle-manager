@@ -360,10 +360,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csv-parse@npm:4.16.3":
-  version: 4.16.3
-  resolution: "csv-parse@npm:4.16.3"
-  checksum: ba740ff2dbeb78c847d6c1d9a00ae9d071a353beea4852307bc2a3df1c422ae7e134a24e0cca524068701c40ed59f545de8f876c3f5705ef6a5f340777a9083e
+"csv-parse@npm:5.1.0":
+  version: 5.1.0
+  resolution: "csv-parse@npm:5.1.0"
+  checksum: db4cc6cb745a9b5793c57e6247a18f2f149625f53cbb6cdeffcc148e405ac6cb0eabb8fbffbf86075efb970213476d80c6db068065cfca8bb1578c6059d7a8b9
   languageName: node
   linkType: hard
 
@@ -916,7 +916,7 @@ __metadata:
     axios: 0.26.1
     cli-table3: 0.6.1
     clipboardy: 3.0.0
-    csv-parse: 4.16.3
+    csv-parse: 5.1.0
     dotenv: 10.0.0
     i18n-iso-countries: 6.8.0
     match-sorter: 6.3.1
